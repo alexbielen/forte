@@ -19,7 +19,7 @@ let
   ];
 
   myShellHook = ''
-    alias repl="cabal new-repl"
+    alias repl="cabal v2-repl"
   '';
 in
 myNixPkgs.myHaskellPackages.forte.env.overrideAttrs (oldEnv: {
