@@ -22,7 +22,8 @@ maintainer:         alexhendriebielen@gmail.com
 extra-source-files: CHANGELOG.md
 
 library
-    exposed-modules:  MyLib
+    exposed-modules: Transform
+                   , PitchClass
 
     -- Modules included in this library but not exported.
     -- other-modules:
