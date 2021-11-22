@@ -5,10 +5,13 @@ module Transform
     dxToX,
     uniformQuantize,
     uniformQuantizeF,
+    orderPitchfieldWithRow,
     FitMode (..),
     UniformMode (..),
   )
 where
+
+import PitchClass (midicentsToPitchClass)
 
 data FitMode
   = Wrap
@@ -70,7 +73,6 @@ xToDx l@(_ : xs) = zipWith diff l xs
 dxToX :: (Num a) => a -> [a] -> [a]
 dxToX start = foldl (\acc x -> acc ++ [last acc + x]) [start]
 
-
 -- |
 -- QuantizeMode
 --
@@ -100,9 +102,8 @@ uniformQuantize mode step n = case mode of
 
     conv = fromIntegral . floor
 
-{-
-uniformQuantizeF maps the uniformQuantize function over functors.
--}
+-- |
+-- uniformQuantizeF maps the uniformQuantize function over functors.
 uniformQuantizeF :: (Functor f, RealFrac a) => UniformMode -> a -> f a -> f a
 uniformQuantizeF mode step = fmap (uniformQuantize mode step)
 
@@ -110,3 +111,14 @@ uniformQuantizeF mode step = fmap (uniformQuantize mode step)
 -- rotate a list by n.
 rotate :: Int -> [a] -> [a]
 rotate = drop <> take
+
+-- |
+-- orderPitchfieldWithRow takes a row and a "pitchfield" and returns the pitchfield
+-- in the order corresponding to the pitch classes from the row.
+--
+-- For example, the row [0, 4, 5, 2, 7, 9, 6, 8, 11, 10, 3, 1]
+-- and pitchfield [6200,6300,6800,6900,7000,7600,8300,8900,9000,9100,9600,9700]
+-- results in:
+-- [9600, 7600, 8900, 6200, 9100, 6900, 9000, 6800, 8300, 7000, 6300, 9700]
+orderPitchfieldWithRow pitchfield row = sequenceA $ map (`lookup` ordered) row 
+  where ordered = map (\a -> (midicentsToPitchClass a, a)) pitchfield

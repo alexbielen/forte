@@ -3,6 +3,8 @@ module PitchClass
     unorderedInterval,
     invert,
     transpose,
+    transposeF,
+    midicentsToPitchClass
   )
 where
 
@@ -42,6 +44,13 @@ invert = (-) 12
 -- transpose pitch n by some interval.
 transpose :: Integral a => a -> a -> a
 transpose n by = _mod12 (n + by)
+
+
+-- |
+-- transpose a function by some interval
+transposeF :: (Functor f, Integral b) => b -> f b -> f b
+transposeF n = fmap (transpose n)
+
 
 -- |
 -- Convert midicents to pitchclasses.
