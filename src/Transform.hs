@@ -3,16 +3,15 @@ module Transform
     fitF,
     xToDx,
     dxToX,
+    rotate,
     uniformQuantize,
     uniformQuantizeF,
     orderPitchfieldWithRow,
     FitMode (..),
     UniformMode (..),
-  )
-where
+  ) where
 
 import PitchClass (midicentsToPitchClass)
-
 data FitMode
   = Wrap
   | Clamp
@@ -120,5 +119,6 @@ rotate = drop <> take
 -- and pitchfield [6200,6300,6800,6900,7000,7600,8300,8900,9000,9100,9600,9700]
 -- results in:
 -- [9600, 7600, 8900, 6200, 9100, 6900, 9000, 6800, 8300, 7000, 6300, 9700]
-orderPitchfieldWithRow pitchfield row = sequenceA $ map (`lookup` ordered) row 
+orderPitchfieldWithRow :: Traversable t => [Int] -> t Int -> Maybe (t Int)
+orderPitchfieldWithRow pitchfield = traverse (`lookup` ordered)
   where ordered = map (\a -> (midicentsToPitchClass a, a)) pitchfield

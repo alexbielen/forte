@@ -3,7 +3,6 @@ module PitchClass
     unorderedInterval,
     invert,
     transpose,
-    transposeF,
     midicentsToPitchClass
   )
 where
